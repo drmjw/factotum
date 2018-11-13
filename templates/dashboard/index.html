@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %}
 {% load staticfiles %}
 {% load humanize %}
+{% load widget_tweaks %}
 
 {% block content %}
       <h1 class="col-sm-12"><span class="oi oi-wrench" title="factotum" aria-hidden="true"></span>
@@ -168,8 +169,8 @@
                 values: [
                     {% for item in product_with_puc_count_by_month %}
                     {
-                        "label" : '{{ item.puc_assigned_month | date:"M Y" }}' ,
-                        "value" : {{ item.product_count }}
+                        "label" : '{{ item.month_made | date:"M Y" }}' ,
+                        "value" : {{ item.id__count }}
                     },
                     {% endfor %}
                 ]
@@ -183,8 +184,8 @@
                 values: [
                     {% for item in datadocument_count_by_month %}
                         {
-                            "label" : '{{ item.upload_month | date:"M Y" }}' ,
-                            "value" : {{ item.document_count }}
+                            "label" : '{{ item.month_made | date:"M Y" }}' ,
+                            "value" : {{ item.id__count }}
                         },
                     {% endfor %}
                 ]
@@ -197,10 +198,10 @@
             {
                 'color': 'blue',
                 'values': [
-                    {% for item in datadocument_count_by_date.all %}
+                    {% for item in datadocument_count_by_date %}
                         {
-                            'y': {{ item.document_count }},
-                            'x': '{{ item.upload_date }}'
+                            'y': {{ item.id__count }},
+                            'x': '{{ item.created_at | date:"Y-m-d"  }}'
                         },
                     {% endfor %}
                 ],
