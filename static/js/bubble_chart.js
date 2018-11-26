@@ -76,7 +76,7 @@ function bubbleChart() {
             }
         }).strength(0.08)
 
-        var forceXCombine = d3v4.forceX(width / 2).strength(0.1)
+        var forceXCombine = d3v4.forceX(width * 0.35 ).strength(0.1)
 
         var forceY = d3v4.forceY(function(d){
             console.warn(`finding ${d[columnForColors]} in ${unique} `)
