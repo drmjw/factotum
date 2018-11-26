@@ -14,9 +14,9 @@ function bubbleChart() {
             .attr('height', height);
 
         var ldat = [
-                      {"title":"Level 1","x":80},
-                      {"title":"Level 2","x":347},
-                      {"title":"Level 3","x":620}
+                      {"title":"Level 1","x":60},
+                      {"title":"Level 2","x":317},
+                      {"title":"Level 3","x":600}
                     ]
 
         var labels = svg.selectAll('text')
@@ -48,22 +48,42 @@ function bubbleChart() {
         }), d3v4.max(data, function(d) {
             return +d[columnForRadius];
         })]).range([2,20]);
+
         var colorCircles = d3v4.scaleOrdinal(d3v4.schemeCategory10)
+        let result = data.map(a => a.gen_cat);
+        function onlyUnique(value, index, self) {
+            return self.indexOf(value) === index;
+        }
+        var unique = result.filter( onlyUnique );
+        var colors = unique.map(a => colorCircles(a));
 
+        for (i=0; i<unique.length; i++) {
+            legendColors.push({title:unique[i], color:colors[i]})
+        }
 
+        var scaleY = d3v4.scaleLinear()
+        .domain([0, legendColors.length-1])
+        .range([height * 0.25, height * 0.75]);
 
 
         var forceXSeparate = d3v4.forceX(function (d){
             if(d.PUC_type === '1'){
-                return 180
+                return 160
             } else if (d.PUC_type === '2'){
-                return 420
+                return 400
             } else {
-                return 620
+                return 600
             }
         }).strength(0.08)
 
-        var forceXCombine = d3v4.forceX(width / 2).strength(0.05)
+        var forceXCombine = d3v4.forceX(width / 2).strength(0.1)
+
+        var forceY = d3v4.forceY(function(d){
+            console.warn(`finding ${d[columnForColors]} in ${unique} `)
+            cat_index = unique.indexOf(d[columnForColors]);
+            //console.warn(`scaling ${cat_index} through ${legendColors.length} `)
+            return scaleY(cat_index);
+        }).strength(0.2)
 
         var forceCollide = d3v4.forceCollide(function(d){
             return scaleRadius(d[columnForRadius]) + 5;
@@ -73,7 +93,8 @@ function bubbleChart() {
             // .force("charge", d3v4.forceManyBody().strength([-50]))
             .force('charge', d3v4.forceManyBody().strength(-8))
             .force("x", forceXCombine)
-            .force("y", d3v4.forceY(height / 2).strength(0.05))
+            //.force("y", d3v4.forceY(height / 2).strength(0.05))
+            .force("y", forceY)
             .force("collide", forceCollide)
             .on("tick", ticked);
 
@@ -105,16 +126,7 @@ function bubbleChart() {
 
 
 
-        let result = data.map(a => a.gen_cat);
-        function onlyUnique(value, index, self) {
-            return self.indexOf(value) === index;
-        }
-        var unique = result.filter( onlyUnique );
-        var colors = unique.map(a => colorCircles(a));
 
-        for (i=0; i<unique.length; i++) {
-            legendColors.push({title:unique[i], color:colors[i]})
-        }
 
         var slot = 90
         var legend = svg.append('g')
