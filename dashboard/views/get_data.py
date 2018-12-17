@@ -156,7 +156,23 @@ def get_data_dsstox_csv_template(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="dsstox_substance_template.csv"'
     writer = csv.writer(response)
-    writer.writerow(['DTXSID'])
+    writer.writerow(['DTXSID',  'pucs_n', 'dds_n', 'dds_wf_n', 'products_n'])
+    for stat in stats:
+        writer.writerow([stat['sid'], stat['pucs_n'], stat['dds_n'], stat['dds_wf_n'], stat['products_n']])
+
+    return response
+
+
+def unmatched_chemical_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="unmatched_chemicals.csv"'
+    chems = ExtractedChemical.objects.filter(curated_chemical__isnull=True).values('','')
+    writer = csv.writer(response)
+    writer.writerow(['DTXSID',  'pucs_n', 'dds_n', 'dds_wf_n', 'products_n'])
+    for chem in chems:
+        writer.writerow([stat['sid'], stat['pucs_n'], stat['dds_n'], stat['dds_wf_n'], stat['products_n']])
+
+
     return response
 
 

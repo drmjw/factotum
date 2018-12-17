@@ -91,6 +91,8 @@ urlpatterns = [
     path('get_data/', views.get_data,      name='get_data'),
     path('dl_chem_summary/', views.download_chem_stats,
                                             name='download_chem_stats'),
+    path('dl_unmatched_chemicals/', views.unmatched_chemical_csv,
+                                            name='unmatched_chemical_csv'),
     path('upload/dtxsid_csv/', views.upload_dtxsid_csv,
                                             name='upload_dtxsid_csv'),
     path('get_data/get_dsstox_csv_template/', views.get_data_dsstox_csv_template,
