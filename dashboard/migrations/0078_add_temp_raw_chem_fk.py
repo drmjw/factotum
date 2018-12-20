@@ -26,4 +26,9 @@ class Migration(migrations.Migration):
             name='rawchem_ptr_temp',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.RawChem'),
         ),
+        migrations.AddField(
+            model_name='dsstoxsubstance',
+            name='rawchem_ptr_temp',
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.RawChem'),
+        ),
     ]
