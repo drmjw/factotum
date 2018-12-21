@@ -3,23 +3,19 @@ from .common_info import CommonInfo
 from .extracted_chemical import ExtractedChemical
 from .ingredient import Ingredient
 from django.urls import reverse
+from .raw_chem import RawChem
 
 
 class DSSToxSubstance(CommonInfo):
 
-    extracted_chemical = models.OneToOneField(ExtractedChemical,
-                                            on_delete=models.CASCADE,
-                                            null=False, blank=False, 
-                                            related_name='curated_chemical')
-
-    # TODO: confirm that deleting an ExtractedChemical should delete
-    # related DSSToxSubstance objects
     true_cas = models.CharField(max_length=50, null=True, blank=True)
     true_chemname = models.CharField(max_length=500, null=True, blank=True)
     rid = models.CharField(max_length=50, null=True, blank=True)
     sid = models.CharField(max_length=50, null=True, blank=True)
-    rawchem_ptr_temp = models.ForeignKey(blank=True, null=True, 
-        on_delete=models.SET_NULL, to='dashboard.RawChem')
+
+    defaultRawChemID = RawChem.objects.filter(raw_chem_name='Undefined').first().id
+    rawchem_ptr_temp = models.OneToOneField(default=defaultRawChemID ,
+        on_delete=models.CASCADE, to='dashboard.RawChem')
 
 
     def __str__(self):
