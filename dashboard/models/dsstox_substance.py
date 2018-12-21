@@ -14,7 +14,7 @@ class DSSToxSubstance(CommonInfo):
     sid = models.CharField(max_length=50, null=True, blank=True)
 
     defaultRawChemID = RawChem.objects.filter(raw_chem_name='Undefined').first().id
-    rawchem_ptr_temp = models.OneToOneField(default=defaultRawChemID ,
+    rawchem_ptr_temp = models.OneToOneField(default=defaultRawChemID , parent_link=True ,
         on_delete=models.CASCADE, to='dashboard.RawChem')
 
 
