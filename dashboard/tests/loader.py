@@ -74,8 +74,7 @@ def load_model_objects():
                                             unit_type=ut,
                                             weight_fraction_type = wft,
                                             ingredient = ing)
-    dsstox = DSSToxSubstance.objects.create(extracted_chemical=ec,
-                                            true_chemname='Test Chem Name')
+    dsstox = DSSToxSubstance.objects.create(true_chemname='Test Chem Name')
     pt = PUCTag.objects.create(name="Test PUC Attribute")
     pd = ProductDocument.objects.create(product=p, document=doc)
     ehp = ExtractedHabitsAndPractices.objects.create(extracted_text=extext,

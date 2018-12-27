@@ -13,9 +13,21 @@ def switch_to_raw(apps, schema_editor):
     NewFU = apps.get_model('dashboard', 'ExtractedFunctionalUse_new')
     OldLP = apps.get_model('dashboard', 'ExtractedListPresence_x')
     NewLP = apps.get_model('dashboard', 'ExtractedListPresence_new')
-    OldDSSTox = apps.get_model('dashboard', 'DSSToxSubstance_x')
-    NewDSSTox = apps.get_model('dashboard', 'DSSToxSubstance_new')
+    OldDSSTox = apps.get_model('dashboard', 'DSSToxSubstance')
+    # NewDSSTox = apps.get_model('dashboard', 'DSSToxSubstance_new')
     for chem in OldChem.objects.all():
+        dtox=None
+        if OldDSSTox.objects.filter(extracted_chemical_id=chem.id):
+            dtox = OldDSSTox.objects.get(extracted_chemical_id=chem.id)
+            # dtox = NewDSSTox.objects.create(
+            #             id=old_dss.id,
+            #             true_cas=old_dss.true_cas,
+            #             true_chemname=old_dss.true_chemname,
+            #             rid=old_dss.rid,
+            #             sid=old_dss.sid,
+            #             created_at=old_dss.created_at,
+            #             updated_at=old_dss.updated_at
+            #         )
         new_chem = NewChem(id=chem.id,
                             raw_cas=chem.raw_cas,
                             raw_chem_name=chem.raw_chem_name,
@@ -27,23 +39,12 @@ def switch_to_raw(apps, schema_editor):
                             extracted_text=chem.extracted_text,
                             unit_type=chem.unit_type,
                             weight_fraction_type=chem.weight_fraction_type,
+                            dss_tox=dtox,
                             created_at=chem.created_at,
                             updated_at=chem.updated_at,
         )
         new_chem.save()
 
-        if OldDSSTox.objects.filter(extracted_chemical_id=new_chem.id):
-            old_dss = OldDSSTox.objects.get(extracted_chemical_id=new_chem.id)
-            NewDSSTox.objects.create(
-                id=old_dss.id,
-                true_cas=old_dss.true_cas,
-                true_chemname=old_dss.true_chemname,
-                rid=old_dss.rid,
-                sid=old_dss.sid,
-                created_at=old_dss.created_at,
-                updated_at=old_dss.updated_at,
-                extracted_chemical=new_chem
-            )
     for fu in OldFU.objects.all():
         new_fu = NewFU.objects.create(raw_cas=fu.raw_cas,
             raw_chem_name=fu.raw_chem_name,
@@ -68,11 +69,27 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='rawchem',
+            name='dss_tox',
+            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='dashboard.DSSToxSubstance'),
+        ),
         migrations.RenameModel('ExtractedChemical', 'ExtractedChemical_x'),
         migrations.RenameModel('ExtractedFunctionalUse', 'ExtractedFunctionalUse_x'),
         migrations.RenameModel('ExtractedListPresence', 'ExtractedListPresence_x'),
-        migrations.RenameModel('DSSToxSubstance', 'DSSToxSubstance_x'),
-
+        # migrations.RenameModel('DSSToxSubstance', 'DSSToxSubstance_x'),
+        # migrations.CreateModel(
+        #     name='DSSToxSubstance_new',
+        #     fields=[
+        #         ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+        #         ('true_cas', models.CharField(blank=True, max_length=50, null=True)),
+        #         ('true_chemname', models.CharField(blank=True, max_length=500, null=True)),
+        #         ('rid', models.CharField(blank=True, max_length=50, null=True)),
+        #         ('sid', models.CharField(blank=True, max_length=50, null=True)),
+        #         ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
+        #         ('updated_at', models.DateTimeField(blank=True, null=True)),
+        #     ],
+        # ),
         migrations.CreateModel(
             name='ExtractedChemical_new',
             fields=[
@@ -114,32 +131,21 @@ class Migration(migrations.Migration):
             },
             bases=('dashboard.rawchem',),
         ),
-        migrations.CreateModel(
-            name='DSSToxSubstance_new',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('true_cas', models.CharField(blank=True, max_length=50, null=True)),
-                ('true_chemname', models.CharField(blank=True, max_length=500, null=True)),
-                ('rid', models.CharField(blank=True, max_length=50, null=True)),
-                ('sid', models.CharField(blank=True, max_length=50, null=True)),
-                ('created_at', models.DateTimeField(default=django.utils.timezone.now)),
-                ('updated_at', models.DateTimeField(blank=True, null=True)),
-                ('extracted_chemical', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='curated_chemical', to='dashboard.ExtractedChemical_new')),
-            ],
-        ),
-
         
         migrations.RunPython(switch_to_raw, reverse_code=migrations.RunPython.noop),
-
+        migrations.RemoveField(
+            model_name='dsstoxsubstance',
+            name='extracted_chemical',
+        ),
         migrations.DeleteModel('Ingredient'),
-        migrations.DeleteModel('DSSToxSubstance_x'),
+        # migrations.DeleteModel('DSSToxSubstance_x'),
         migrations.DeleteModel('ExtractedChemical_x'),
         migrations.RenameModel('ExtractedChemical_new', 'ExtractedChemical'),
         migrations.DeleteModel('ExtractedFunctionalUse_x'),
         migrations.RenameModel('ExtractedFunctionalUse_new', 'ExtractedFunctionalUse'),
         migrations.DeleteModel('ExtractedListPresence_x'),
         migrations.RenameModel('ExtractedListPresence_new', 'ExtractedListPresence'),
-        migrations.RenameModel('DSSToxSubstance_new', 'DSSToxSubstance'),
+        # migrations.RenameModel('DSSToxSubstance_new', 'DSSToxSubstance'),
 
         migrations.CreateModel(
             name='Ingredient',
@@ -175,14 +181,14 @@ class Migration(migrations.Migration):
             name='updated_at',
             field=models.DateTimeField(auto_now=True, null=True),
         ),
-        migrations.AlterField(
-            model_name='dsstoxsubstance',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, null=True),
-        ),
-        migrations.AlterField(
-            model_name='dsstoxsubstance',
-            name='updated_at',
-            field=models.DateTimeField(auto_now=True, null=True),
-        ),
+        # migrations.AlterField(
+        #     model_name='dsstoxsubstance',
+        #     name='created_at',
+        #     field=models.DateTimeField(auto_now_add=True, null=True),
+        # ),
+        # migrations.AlterField(
+        #     model_name='dsstoxsubstance',
+        #     name='updated_at',
+        #     field=models.DateTimeField(auto_now=True, null=True),
+        # ),
     ]
