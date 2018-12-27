@@ -98,7 +98,7 @@ def stats_by_dtxsids(dtxs):
                     "SUM( "
                         "(SELECT Count(DISTINCT ec2.extracted_text_id) as dd_wf_id "
                         "FROM dashboard_extractedchemical ec2 "
-                        "WHERE ec2.id = dss.extracted_chemical_id "
+                        "WHERE ec2.rawchem_ptr_id = dss.extracted_chemical_id "
                         "GROUP BY ec2.extracted_text_id "
                         "HAVING SUM( ( "
                             "(ec2.raw_max_comp IS NULL) +  "
@@ -109,7 +109,7 @@ def stats_by_dtxsids(dtxs):
                             ") as dds_wf_n "
                             "FROM dashboard_dsstoxsubstance dss "
                             "LEFT JOIN dashboard_extractedchemical ec "
-                            "on ec.id = dss.extracted_chemical_id "
+                            "on ec.rawchem_ptr_id = dss.extracted_chemical_id "
                             "GROUP BY dss.sid ")
     cursor_dds_wf_n = connection.cursor()
     cursor_dds_wf_n.execute(strsql)

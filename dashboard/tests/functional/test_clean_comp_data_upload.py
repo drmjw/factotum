@@ -15,7 +15,7 @@ class UploadExtractedFileTest(TestCase):
                 '02_datasource.yaml', '03_datagroup.yaml', '04_PUC.yaml',
                 '05_product.yaml', '06_datadocument.yaml', '07_script.yaml',
                 '08_extractedtext.yaml', '09_productdocument.yaml', 
-                '10_extractedchemical', '11_dsstoxsubstance']
+                '10_extractedchemical', '11_dsstoxsubstance', '19_raw_chem']
 
     def setUp(self):
         self.c = Client()

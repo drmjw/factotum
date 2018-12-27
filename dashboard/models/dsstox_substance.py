@@ -7,7 +7,7 @@ from django.urls import reverse
 
 class DSSToxSubstance(CommonInfo):
 
-    extracted_chemical = models.OneToOneField(ExtractedChemical,
+    extracted_chemical = models.OneToOneField('ExtractedChemical',
                                             on_delete=models.CASCADE,
                                             null=False, blank=False, 
                                             related_name='curated_chemical')

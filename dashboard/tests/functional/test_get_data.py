@@ -25,7 +25,8 @@ class TestGetData(TestCase):
                 '08_extractedtext.yaml', '09_productdocument.yaml',
                 '10_extractedchemical', '11_dsstoxsubstance',
                 '12_habits_and_practices.yaml',
-                '13_habits_and_practices_to_puc.yaml']
+                '13_habits_and_practices_to_puc.yaml',
+                '19_raw_chem.yaml']
 
     def setUp(self):
         self.client = Client()

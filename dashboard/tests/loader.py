@@ -9,7 +9,7 @@ fixtures_standard = ['00_superuser.yaml','01_lookups.yaml','02_datasource.yaml',
                      '11_dsstoxsubstance.yaml', '12_habits_and_practices.yaml',
                      '13_habits_and_practices_to_puc.yaml','14_product_to_puc.yaml',
                      '15_extractedfunctionaluse.yaml','16_extractedcpcat.yaml',
-                     '17_extractedlistpresence.yaml','18_puc_tag.yaml']
+                     '17_extractedlistpresence.yaml','18_puc_tag.yaml','19_raw_chem.yaml']
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
