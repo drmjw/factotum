@@ -5,11 +5,17 @@ from .extracted_text import ExtractedText
 from .unit_type import UnitType
 from .weight_fraction_type import WeightFractionType
 from .raw_chem import RawChem
+from .script import Script
 
 def validate_ingredient_rank(value):
     if value < 1 or value > 999:
         raise ValidationError(
             (f'Quantity {value} is not allowed'), params={'value': value},)
+
+def validate_wf_analysis(value):
+    if value < 0 or value > 1:
+        raise ValidationError(
+            (f'Quantity {value} must be between 0 and 1'),params={'value': value})
 
 class ExtractedChemical(CommonInfo, RawChem):
     extracted_text = models.ForeignKey(ExtractedText, on_delete=models.CASCADE,
@@ -29,6 +35,20 @@ class ExtractedChemical(CommonInfo, RawChem):
     ingredient_rank = models.PositiveIntegerField(null=True, blank=True,
                                         validators=[validate_ingredient_rank])
     raw_central_comp = models.CharField(max_length=100, null=True, blank=True)
+
+    # Attributes from deprecated Ingredient model
+    lower_wf_analysis = models.DecimalField(max_digits=16, decimal_places=15,
+                                            null=True, blank=True,
+                                            validators=[validate_wf_analysis])
+    central_wf_analysis = models.DecimalField(max_digits=16, decimal_places=15,
+                                              null=True, blank=True,
+                                              validators=[validate_wf_analysis])
+    upper_wf_analysis = models.DecimalField(max_digits=16, decimal_places=15,
+                                            null=True, blank=True,
+                                            validators=[validate_wf_analysis])
+
+    script = models.ForeignKey(to=Script, on_delete=models.CASCADE,
+                                                    null=True, blank=True)
 
     rawchem_ptr = models.OneToOneField(blank=False, null=False,
             related_name='extracted_chemical', parent_link=True ,

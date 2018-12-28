@@ -69,14 +69,14 @@ def load_model_objects():
                                         unit_type=ut,
                                         weight_fraction_type = wft,
                                         raw_chem_name= 'Test Chem Name',
-                                        raw_cas='test_cas'
+                                        raw_cas='test_cas',
+                                        lower_wf_analysis = 0.123456789012345,
+                                        central_wf_analysis = 0.2,
+                                        upper_wf_analysis = 1,
+                                        script = script
                                         )
     rc = ec.rawchem_ptr
-    ing = Ingredient.objects.create(lower_wf_analysis = 0.123456789012345,
-                                    central_wf_analysis = 0.2,
-                                    upper_wf_analysis = 1,
-                                    script = script,
-                                    rawchem_ptr = rc)
+
     
     dsstox = DSSToxSubstance.objects.create(rawchem_ptr = rc,
                                             true_chemname='Test Chem Name')

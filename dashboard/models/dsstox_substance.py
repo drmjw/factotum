@@ -1,7 +1,6 @@
 from django.db import models
 from .common_info import CommonInfo
 from .extracted_chemical import ExtractedChemical
-from .ingredient import Ingredient
 from django.urls import reverse
 from .raw_chem import RawChem
 

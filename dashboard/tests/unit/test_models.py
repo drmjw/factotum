@@ -67,7 +67,6 @@ class ModelsTest(TestCase):
         self.assertTrue(isinstance(self.objects.extext, ExtractedText))
         self.assertTrue(isinstance(self.objects.ec, ExtractedChemical))
         self.assertTrue(isinstance(self.objects.dsstox, DSSToxSubstance))
-        self.assertTrue(isinstance(self.objects.ing, Ingredient))
         self.assertTrue(isinstance(self.objects.p, Product))
         self.assertTrue(isinstance(self.objects.pd, ProductDocument))
         self.assertTrue(isinstance(self.objects.pt, PUCTag))

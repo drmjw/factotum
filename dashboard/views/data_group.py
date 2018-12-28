@@ -204,25 +204,17 @@ def data_group_detail(request, pk,
                     extracted_chemical = None
                     context['clean_comp_err'][i + 1] = {'id': ['No ExtractedChemical matches rawchem_ptr_id ' + row['id'], ]}
                     print('No ExtractedChemical matches rawchem_ptr_id %s' % row['id'])
-                try:
-                    ingredient = Ingredient.objects.get(rawchem_ptr=extracted_chemical.rawchem_ptr)
-                except Ingredient.DoesNotExist as e:
-                    ingredient = Ingredient(rawchem_ptr=extracted_chemical.rawchem_ptr)
-                ingredient.lower_wf_analysis = row['lower_wf_analysis']
-                ingredient.central_wf_analysis = row['central_wf_analysis']
-                ingredient.upper_wf_analysis = row['upper_wf_analysis']
-                ingredient.script = script
-                try:
-                    ingredient.full_clean()
-                except ValidationError as e:
-                    context['clean_comp_err'][i+1] = e.message_dict
-                good_records.append(ingredient)
+                extracted_chemical.lower_wf_analysis = row['lower_wf_analysis']
+                extracted_chemical.central_wf_analysis = row['central_wf_analysis']
+                extracted_chemical.upper_wf_analysis = row['upper_wf_analysis']
+                extracted_chemical.script = script
+
             if context['clean_comp_err']: # if errors, send back with errors
                 context['clean_comp_data_form'].collapsed = False
                 return render(request, template_name, context)
             if not context['clean_comp_err']:  # no saving until all errors are removed
-                for ingredient in good_records:
-                    ingredient.save()
+                for extracted_chemical in good_records:
+                    extracted_chemical.save()
                 context['msg'] = (f'{len(good_records)} clean composition data records '
                                                     'uploaded successfully.')
                 context['clean_comp_data_form'] = include_clean_comp_data_form(dg)
