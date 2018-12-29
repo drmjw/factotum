@@ -69,8 +69,6 @@ class UploadExtractedFileTest(TestCase):
         resp = views.data_group_detail(request=req, pk=6)
         self.assertContains(resp,'2 clean composition data records uploaded successfully.')
 
-        self.assertEqual(Ingredient.objects.count(),2,"There should be only 2 Ingredient objects")
-
     def test_invalid_headers_clean_comp_data_upload(self):
         sample_csv = self.generate_invalid_headers_clean_comp_data_csv_string()
         sample_csv_bytes = sample_csv.encode(encoding='UTF-8',errors='strict' )

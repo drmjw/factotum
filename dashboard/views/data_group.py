@@ -208,7 +208,11 @@ def data_group_detail(request, pk,
                 extracted_chemical.central_wf_analysis = row['central_wf_analysis']
                 extracted_chemical.upper_wf_analysis = row['upper_wf_analysis']
                 extracted_chemical.script = script
-
+                try:
+                    extracted_chemical.full_clean()
+                except ValidationError as e:
+                    context['clean_comp_err'][i+1] = e.message_dict
+                good_records.append(extracted_chemical)
             if context['clean_comp_err']: # if errors, send back with errors
                 context['clean_comp_data_form'].collapsed = False
                 return render(request, template_name, context)

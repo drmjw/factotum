@@ -104,7 +104,6 @@ def load_model_objects():
                     'dsstox':dsstox,
                     'pt':pt,
                     'pd':pd,
-                    'ing':ing,
                     'dt':dt,
                     'gt':gt,
                     'ehp':ehp
